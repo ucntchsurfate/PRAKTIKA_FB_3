@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/frontend/styles.css" rel="stylesheet">
+    <title>Каталог товаров</title>
+</head>
+<body>
+    <div class="main">
+        <div class="conteiner">
+            <h1>Каталог товаров</h1>
+            <div id="products"></div>
+            <script>
+                fetch('http://localhost:3000/products')
+                .then(response => response.json())
+                .then(data => {
+                    const productsContainer = document.getElementById('products');
+                    data.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <h3>${product.name}</h3>
+                        <p>Цена: ${product.price} руб.</p>
+                        <p>${product.description}</p>
+                        <p>Категории: ${product.categories.join(', ')}</p>
+                    `;
+                    productsContainer.appendChild(card);
+                    });
+                })
+                .catch(error => console.error('Ошибка:', error));
+            </script>
+        </div>
+    </div>
+</body>
+</html>

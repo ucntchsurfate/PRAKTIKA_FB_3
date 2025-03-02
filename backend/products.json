@@ -1,0 +1,40 @@
+[
+  {
+    "id": 1,
+    "name": "PATCHED NAME",
+    "price": 1000,
+    "description": "Описание товара 1",
+    "categories": [
+      "Категория 1"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Товар 2",
+    "price": 2000,
+    "description": "Описание товара 2",
+    "categories": [
+      "Категория 2"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Товар 3",
+    "price": 1500,
+    "description": "Описание товара 3",
+    "categories": [
+      "Категория 1",
+      "Категория 2"
+    ]
+  },
+  {
+    "name": "PATCHED",
+    "price": 1000,
+    "description": "Описание нового товара",
+    "categories": [
+      "электроника",
+      "гаджеты"
+    ],
+    "id": 4
+  }
+]
