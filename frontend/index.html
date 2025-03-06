@@ -11,7 +11,7 @@
             <h1>Каталог товаров</h1>
             <div id="products" style="display: flex; gap: 30px;"></div>
 
-            <h1>Чат</h1>
+            <h2>Чат</h2>
             <div class="chat-box" id="chat"></div>
             <input type="text" id="message" class="chat-input" placeholder="Введите сообщение...">
             <button onclick="sendMessage()">Отправить</button>
@@ -68,7 +68,7 @@
 
         function sendMessage() {
             const input = document.getElementById('message');
-            const message = input.value;
+            const message = `Пользователь: ${input.value}`;
             if (message) {
                 socket.send(message);
                 input.value = '';
