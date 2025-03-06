@@ -35,6 +35,7 @@ const schema = buildSchema(`
   type Mutation {
     addProduct(name: String!, price: Int!, description: String, categories: [String!]): Product
     deleteProduct(id: Int!): Product
+    updateProduct(id: Int!, name: String, price: Int, description: String, categories: [String!]): Product
   }
 `);
 
@@ -61,6 +62,20 @@ deleteProduct: ({ id }) => {
   const deletedProduct = products.splice(productIndex, 1)[0];
   saveProducts(products);
   return deletedProduct;
+},
+
+updateProduct: ({ id, name, price, description, categories }) => {
+  let products = getProducts();
+  const productIndex = products.findIndex(p => p.id === id);
+  if (productIndex === -1) return null;
+
+  if (name !== undefined) products[productIndex].name = name;
+  if (price !== undefined) products[productIndex].price = price;
+  if (description !== undefined) products[productIndex].description = description;
+  if (categories !== undefined) products[productIndex].categories = categories;
+
+  saveProducts(products);
+  return products[productIndex];
 }
 };
 

@@ -7,22 +7,38 @@
 </head>
 <body>
     <h1>Админ-панель</h1>
-    
-    <h1>Управление товарами</h1>
+
+    <h2>Добавить товар</h2>
     <div>
         <input type="text" id="name" placeholder="Название">
         <input type="number" id="price" placeholder="Цена">
         <input type="text" id="description" placeholder="Описание">
-        <input type="text" id="categories" placeholder="Категории">
+        <input type="text" id="categories" placeholder="Категории (через запятую)">
         <button onclick="addProduct()">Добавить товар</button>
     </div>
-    
-    <h1>Список товаров</h1>
-    <div class="product-list" id="products" style="display: flex; gap: 30px;"></div>
 
-    <h1>Чат</h1>
-    <div class="chat-box" id="chat"></div>
-    <input type="text" id="message" class="chat-input" placeholder="Введите сообщение...">
+    <h2>Редактировать товар</h2>
+    <div>
+        <input type="number" id="edit-id" placeholder="ID товара">
+        <input type="text" id="edit-name" placeholder="Новое название">
+        <input type="number" id="edit-price" placeholder="Новая цена">
+        <input type="text" id="edit-description" placeholder="Новое описание">
+        <input type="text" id="edit-categories" placeholder="Новые категории (через запятую)">
+        <button onclick="updateProduct()">Сохранить изменения</button>
+    </div>
+
+    <h2>Удалить товар</h2>
+    <div>
+        <input type="number" id="delete-id" placeholder="ID товара">
+        <button onclick="deleteProduct()">Удалить</button>
+    </div>
+
+    <h2>Список товаров</h2>
+    <div id="products" style="display: flex; flex-wrap: wrap; gap: 30px;"></div>
+
+    <h2>Чат</h2>
+    <div id="chat"></div>
+    <input type="text" id="message" placeholder="Введите сообщение...">
     <button onclick="sendMessage()">Отправить</button>
 
     <script>
@@ -75,10 +91,11 @@
                     const card = document.createElement('div');
                     card.className = 'product-card';
                     card.innerHTML = `
+                        <h3>ID: ${product.id}</h3>
                         <h3>${product.name}</h3>
                         <p>Цена: ${product.price} руб.</p>
                         <p>${product.description}</p>
-                        <button onclick="deleteProduct(${product.id})">Удалить</button>
+                        <p>Категории: ${product.categories.join(', ')}</p>
                     `;
                     productsContainer.appendChild(card);
                 });
@@ -109,14 +126,41 @@
                 },
                 body: JSON.stringify({ query: mutation })
             })
-            .then(response => response.json())
-            .then(() => {
-                fetchProducts();
-            })
+            .then(() => fetchProducts())
             .catch(error => console.error('Ошибка:', error));
         }
 
-        function deleteProduct(id) {
+        function updateProduct() {
+            const id = parseInt(document.getElementById('edit-id').value);
+            const name = document.getElementById('edit-name').value;
+            const price = parseInt(document.getElementById('edit-price').value);
+            const description = document.getElementById('edit-description').value;
+            const categories = document.getElementById('edit-categories').value.split(',').map(cat => cat.trim());
+
+            const mutation = `
+                mutation {
+                    updateProduct(id: ${id}, name: "${name}", price: ${price}, description: "${description}", categories: ${JSON.stringify(categories)}) {
+                        id
+                        name
+                    }
+                }
+            `;
+
+            fetch('http://localhost:4000/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ query: mutation })
+            })
+            .then(() => fetchProducts())
+            .catch(error => console.error('Ошибка:', error));
+        }
+
+        function deleteProduct() {
+            const id = parseInt(document.getElementById('delete-id').value);
+
             const mutation = `
                 mutation {
                     deleteProduct(id: ${id}) {
@@ -133,10 +177,7 @@
                 },
                 body: JSON.stringify({ query: mutation })
             })
-            .then(response => response.json())
-            .then(() => {
-                fetchProducts();
-            })
+            .then(() => fetchProducts())
             .catch(error => console.error('Ошибка:', error));
         }
 

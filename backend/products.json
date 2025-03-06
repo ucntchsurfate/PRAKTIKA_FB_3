@@ -28,22 +28,13 @@
     ]
   },
   {
-    "name": "PATCHED",
-    "price": 1000,
-    "description": "Описание нового товара",
+    "name": "Edited",
+    "price": 1001,
+    "description": "EditedProduct",
     "categories": [
-      "электроника",
-      "гаджеты"
+      "Категория 3",
+      "Категория 65"
     ],
     "id": 4
-  },
-  {
-    "id": 5,
-    "name": "TimaTest",
-    "price": 7777,
-    "description": "Wow",
-    "categories": [
-      "Best"
-    ]
   }
 ]
