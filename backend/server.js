@@ -5,6 +5,8 @@ const app = express();
 const PORT = 3000;
 const PRODUCTS_FILE = path.join(__dirname, 'products.json');
 
+// app.use(express.static(path.join(__dirname, 'frontend')));
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
