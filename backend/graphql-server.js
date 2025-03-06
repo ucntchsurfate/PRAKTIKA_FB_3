@@ -4,6 +4,8 @@ const { graphqlHTTP } = require('express-graphql');
 const { buildSchema } = require('graphql');
 const fs = require('fs');
 const path = require('path');
+const WebSocket = require('ws');
+const http = require('http');
 
 const app = express();
 const PORT = 4000;
@@ -29,14 +31,37 @@ const schema = buildSchema(`
     products: [Product]
     product(id: Int!): Product
   }
+
+  type Mutation {
+    addProduct(name: String!, price: Int!, description: String, categories: [String!]): Product
+    deleteProduct(id: Int!): Product
+  }
 `);
 
+function saveProducts(products) {
+  fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2), 'utf-8');
+}
+
 const root = {
-  products: () => getProducts(),
-  product: ({ id }) => {
-    const products = getProducts();
-    return products.find(product => product.id === id);
-  }
+products: () => getProducts(),
+product: ({ id }) => getProducts().find(p => p.id === id),
+
+addProduct: ({ name, price, description, categories }) => {
+  const products = getProducts();
+  const newProduct = { id: products.length + 1, name, price, description, categories };
+  products.push(newProduct);
+  saveProducts(products);
+  return newProduct;
+},
+
+deleteProduct: ({ id }) => {
+  let products = getProducts();
+  const productIndex = products.findIndex(p => p.id === id);
+  if (productIndex === -1) return null;
+  const deletedProduct = products.splice(productIndex, 1)[0];
+  saveProducts(products);
+  return deletedProduct;
+}
 };
 
 app.use('/graphql', graphqlHTTP({
@@ -45,6 +70,26 @@ app.use('/graphql', graphqlHTTP({
   graphiql: true, 
 }));
 
-app.listen(PORT, () => {
-  console.log(`GraphQL сервер запущен на http://localhost:${PORT}/graphql`);
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+const clients = new Set();
+
+wss.on('connection', ws => {
+  clients.add(ws);
+  ws.on('message', message => {
+    clients.forEach(client => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  });
+  ws.on('close', () => {
+    clients.delete(ws);
+  });
+});
+
+server.listen(PORT, () => {
+  console.log(`Сервер запущен на http://localhost:${PORT}/graphql`);
+  console.log(`WebSocket сервер работает на ws://localhost:${PORT}`);
 });
