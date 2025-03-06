@@ -7,48 +7,73 @@
 </head>
 <body>
     <div class="main">
-        <div class="conteiner">
+        <div class="container">
             <h1>Каталог товаров</h1>
-            <div id="products"></div>
-            <script>
-                const query = `
-                    query {
-                        products {
-                            id
-                            name
-                            price
-                            description
-                            categories
-                        }
-                    }
-                `;
+            <div id="products" style="display: flex; gap: 30px;"></div>
 
-                fetch('http://localhost:4000/graphql', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify({ query })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const productsContainer = document.getElementById('products');
-                    data.data.products.forEach(product => {
-                        const card = document.createElement('div');
-                        card.className = 'product-card';
-                        card.innerHTML = `
-                            <h3>${product.name}</h3>
-                            <p>Цена: ${product.price} руб.</p>
-                            <p>${product.description}</p>
-                            <p>Категории: ${product.categories.join(', ')}</p>
-                        `;
-                        productsContainer.appendChild(card);
-                    });
-                })
-                .catch(error => console.error('Ошибка:', error));
-            </script>
+            <h1>Чат</h1>
+            <div class="chat-box" id="chat"></div>
+            <input type="text" id="message" class="chat-input" placeholder="Введите сообщение...">
+            <button onclick="sendMessage()">Отправить</button>
         </div>
     </div>
+
+    <script>
+        const query = `
+            query {
+                products {
+                    id
+                    name
+                    price
+                    description
+                    categories
+                }
+            }
+        `;
+
+        fetch('http://localhost:4000/graphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({ query })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const productsContainer = document.getElementById('products');
+            data.data.products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <h3>${product.name}</h3>
+                    <p>Цена: ${product.price} руб.</p>
+                `;
+                productsContainer.appendChild(card);
+            });
+        })
+        .catch(error => console.error('Ошибка:', error));
+
+        const socket = new WebSocket('ws://localhost:4000');
+        const chatBox = document.getElementById('chat');
+
+        socket.onmessage = async (event) => {
+            const text = await event.data.text();
+            const messageElement = document.createElement('p');
+            messageElement.textContent = text;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
+
+
+        function sendMessage() {
+            const input = document.getElementById('message');
+            const message = input.value;
+            if (message) {
+                socket.send(message);
+                input.value = '';
+            }
+        }
+    </script>
 </body>
 </html>

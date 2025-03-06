@@ -36,5 +36,14 @@
       "гаджеты"
     ],
     "id": 4
+  },
+  {
+    "id": 5,
+    "name": "TimaTest",
+    "price": 7777,
+    "description": "Wow",
+    "categories": [
+      "Best"
+    ]
   }
 ]
