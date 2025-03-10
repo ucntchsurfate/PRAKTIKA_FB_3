@@ -28,13 +28,12 @@
     ]
   },
   {
-    "name": "Edited",
-    "price": 1001,
-    "description": "EditedProduct",
+    "id": 4,
+    "name": "Tima",
+    "price": 7777,
+    "description": "Test",
     "categories": [
-      "Категория 3",
-      "Категория 65"
-    ],
-    "id": 4
+      "Pervaya"
+    ]
   }
 ]

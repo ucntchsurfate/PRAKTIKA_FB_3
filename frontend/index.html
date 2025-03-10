@@ -22,11 +22,8 @@
         const query = `
             query {
                 products {
-                    id
                     name
                     price
-                    description
-                    categories
                 }
             }
         `;
@@ -55,6 +52,7 @@
         .catch(error => console.error('Ошибка:', error));
 
         const socket = new WebSocket('ws://localhost:4000');
+        
         const chatBox = document.getElementById('chat');
 
         socket.onmessage = async (event) => {
@@ -64,7 +62,6 @@
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
         };
-
 
         function sendMessage() {
             const input = document.getElementById('message');
