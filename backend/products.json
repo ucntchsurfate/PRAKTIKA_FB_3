@@ -29,11 +29,38 @@
   },
   {
     "id": 4,
-    "name": "Tima",
-    "price": 7777,
+    "name": "Test",
+    "price": 444,
     "description": "Test",
     "categories": [
-      "Pervaya"
+      "Test"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "string",
+    "price": 0,
+    "description": "string",
+    "categories": [
+      "string"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "q",
+    "price": 1,
+    "description": "q",
+    "categories": [
+      "q"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "222",
+    "price": 222,
+    "description": "222",
+    "categories": [
+      "222"
     ]
   }
 ]

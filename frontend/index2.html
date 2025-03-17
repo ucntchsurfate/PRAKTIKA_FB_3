@@ -154,7 +154,13 @@
                 },
                 body: JSON.stringify({ query: mutation })
             })
-            .then(() => fetchProducts())
+            // .then(() => fetchProducts())
+            .then(response => response.json())
+            .then(data => {
+                const updatedProduct = data.data.updateProduct;
+                alert(`Товар "${updatedProduct.name}" (ID: ${updatedProduct.id}) успешно обновлён!`);
+                fetchProducts();
+            })
             .catch(error => console.error('Ошибка:', error));
         }
 
